@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        tr {
+            text-align: center;
+        }
+
+        input {
+            width: 400px;
+        }
+        button {
+            border-radius: 20%;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center">------------------STUDENT MANAGE-------------------</h1>
+<label id="validate"></label><br>
+<input id="newStudent" type="text" placeholder="Please fill to create new Student ....">
+<button style="background-color: green; color:white;" onclick="createStudent()">Create Student</button>
+<input placeholder="Please enter the name student to search ...." id="search" type="text" oninput="actionSearch()"> <button style="background-color: aqua; color: red; border-radius: 50%">Search</button>
+<table border="1" style="width: 100%">
+    <tr>
+        <th>STT</th>
+        <th>NAME</th>
+        <th>EDIT</th>
+        <th>DELETE</th>
+    </tr>
+    <tbody id="drawTable">
+    <!--    <tr>-->
+    <!--        <td>1</td>-->
+    <!--        <td>Mai Cơn</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>2</td>-->
+    <!--        <td>Việt Anh</td>-->
+    <!--    </tr>-->
+    </tbody>
+</table>
+<script>
+    let students = ['Mai Cơn', 'Việt Anh']
+
+    //1. XÂY DỰNG HÀM Read (CRUD)
+    function showListStudent() {
+        let drawTable = '';
+        for (let i = 0; i < students.length; i++) {
+            //Cách 1: Vẽ bằng chuỗi '' thông thường
+            let j = i + 1;
+            drawTable +=
+                '<tr>' +
+                // '<td>' + (i+1) + '</td>' +   //Cách 1: Tăng số thứ tự bằng (i+1)
+                '<td>' + j + '</td>' + //Cách 2: Tăng số thứ tự bằng cách khai báo: j = i + 1
+                '<td>' + students[i] + '</td>' +
+                '<td>' + '<button style="background-color: blue; color: aliceblue" onclick="updateStudent(' + i + ')">Edit</button>' + '</td>' +
+                '<td>' + '<button style="background-color: red; color: aliceblue" onclick="deleteStudent(' + i + ')">Delete</button>' + '</td>' +
+                '</tr>'
+        }
+        document.getElementById('drawTable').innerHTML = drawTable;
+    }
+
+    showListStudent();
+
+    //2. Xây dựng hàm CREAT (CRUD)
+    function createStudent() {
+        let newStudent = document.getElementById('newStudent').value;
+        if (newStudent.trim() === '') {
+            document.getElementById('validate').innerHTML = '<label style="color: red">The name is required! Please try again!</label>'
+        } else {
+            students.push(newStudent);
+            document.getElementById('validate').innerHTML = '<label style="color: blue">Create Success!!</label>'
+            showListStudent();
+        }
+    }
+
+    //3. Xây dựng hàm Update (U - CRUD)
+    function updateStudent(id) {
+        let newStudent = prompt('Enter the name to edit Student ', 'Old Name: ' + students[id])
+        if (newStudent.trim() === '') {
+            document.getElementById('validate').innerHTML = '<label style="color: red">The name is required! Please try again!</label>'
+        } else {
+            let checkExisted = false;
+            for (let i = 0; i < students.length; i++) {
+                if (newStudent === students[i]) {
+                    checkExisted = true;
+                }
+            }
+            if (checkExisted) {
+                document.getElementById('validate').innerHTML = '<label style="color: red">The name is existed! Please try again!</label>'
+            } else {
+                students[id] = newStudent;
+                document.getElementById('validate').innerHTML = '<label style="color: blue">Update Student Success!!</label>'
+                showListStudent();
+            }
+        }
+    }
+
+    //4. Xây dựng hàm Delete (D - CRUD)
+    function deleteStudent(id) {
+        console.log('id ====> ', id)
+        if(confirm('Are you sure delete Student?')){
+            students.splice(id,1)
+            document.getElementById('validate').innerHTML = '<label style="color: blue">Delete Student Success!!</label>'
+            showListStudent()
+        } else {
+            document.getElementById('validate').innerHTML = '<label style="color: red">KHÔNG XÓA THÌ THÔI</label>'
+        }
+    }
+    //5. Xây dựng hàm Search
+    let listSearchStudent = [];
+    function actionSearch() {
+        listSearchStudent = []
+        let search = document.getElementById('search').value;
+        if(search.trim()===''){
+            showListStudent();
+        } else {
+            for (let i = 0; i < students.length; i++) {
+                if(students[i].search(search)!=-1){
+                    listSearchStudent.push(students[i])
+                } else {
+                    continue;
+                }
+            }
+            showListSearch();
+        }
+    }
+    function showListSearch() {
+        let drawTable = '';
+        for (let i = 0; i < listSearchStudent.length; i++) {
+            //Cách 1: Vẽ bằng chuỗi '' thông thường
+            let j = i + 1;
+            drawTable +=
+                '<tr>' +
+                // '<td>' + (i+1) + '</td>' +   //Cách 1: Tăng số thứ tự bằng (i+1)
+                '<td>' + j + '</td>' + //Cách 2: Tăng số thứ tự bằng cách khai báo: j = i + 1
+                '<td>' + listSearchStudent[i] + '</td>' +
+                '<td>' + '<button style="background-color: blue; color: aliceblue" onclick="updateStudent(' + i + ')">Edit</button>' + '</td>' +
+                '<td>' + '<button style="background-color: red; color: aliceblue" onclick="deleteStudent(' + i + ')">Delete</button>' + '</td>' +
+                '</tr>'
+        }
+        document.getElementById('drawTable').innerHTML = drawTable;
+    }
+
+</script>
+</body>
+</html>
